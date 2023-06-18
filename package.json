@@ -3,7 +3,7 @@
   "name": "wolfrontend",
   "version": "1.0.0",
   "description": "HELLO",
-  "main": "src/index2.js",
+  "main": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
