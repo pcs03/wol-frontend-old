@@ -22,6 +22,8 @@
     "eslint": "^8.38.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.3.4",
+    "ts-proto": "^1.149.0",
+    "ts-protoc-gen": "^0.15.0",
     "typescript": "^5.0.2",
     "vite": "^4.3.9"
   }
