@@ -2,12 +2,12 @@ import './App.css';
 import React, { useState } from 'react';
 
 function App() {
-  const [macAddress, setMacAddress] = useState('');
+  const [id, setId] = useState('');
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    if (macAddress.trim() === '') {
+    if (id.trim() === '') {
       console.error('Please enter a valid MAC Address');
       return;
     }
@@ -18,7 +18,7 @@ function App() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ 'mac-address': macAddress }),
+        body: JSON.stringify({ 'id': id }),
       });
 
       const data = await response.json();
@@ -27,14 +27,14 @@ function App() {
       console.log('Error', error);
     }
 
-    setMacAddress('');
+    setId('');
   };
   return (
     <form onSubmit={handleSubmit}>
       <input
         type="text"
-        value={macAddress}
-        onChange={(e) => setMacAddress(e.target.value)}
+        value={id}
+        onChange={(e) => setId(e.target.value)}
       />
       <button type="submit">Submit</button>
     </form>
