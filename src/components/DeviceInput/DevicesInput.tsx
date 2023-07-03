@@ -1,7 +1,6 @@
-import './App.css';
 import React, { useState } from 'react';
 
-function App() {
+const DeviceInput: React.FC = () => {
   const [id, setId] = useState('');
 
   const handleSubmit = async (event: React.FormEvent) => {
@@ -18,7 +17,7 @@ function App() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ 'id': id }),
+        body: JSON.stringify({ id: id }),
       });
 
       const data = await response.json();
@@ -29,16 +28,13 @@ function App() {
 
     setId('');
   };
+
   return (
-    <form onSubmit={handleSubmit}>
-      <input
-        type="text"
-        value={id}
-        onChange={(e) => setId(e.target.value)}
-      />
+    <form onSubmit={handleSubmit} className="device-input">
+      <input type="text" value={id} onChange={(e) => setId(e.target.value)} />
       <button type="submit">Submit</button>
     </form>
   );
-}
+};
 
-export default App;
+export default DeviceInput;

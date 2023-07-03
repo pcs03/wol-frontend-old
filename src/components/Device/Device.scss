@@ -1,0 +1,36 @@
+.device {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 10px;
+  
+    .device-icon,
+    .device-info,
+    .device-buttons,
+    .device-status {
+      display: flex;
+      align-items: center;
+      margin-right: 10px;
+      margin-left: 10px;
+    }
+
+    .device-info {
+      flex-direction: column;
+    }
+  
+    p {
+      margin: 2px;
+    }
+
+    .device-buttons {
+        flex-direction: column;
+        
+        .button {
+          width: 100%;
+          margin: 2px;
+        }
+    }
+  
+  }
+  
