@@ -12,10 +12,10 @@ function App() {
   ];
 
   return (
-    <div id="app-root">
+    <>
       <DevicesList devices={deviceList} />
       <DeviceInput />
-    </div>
+    </>
   );
 }
 

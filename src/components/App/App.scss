@@ -1,7 +1,12 @@
-@use "../../styles/colors.scss";
+@use '../../styles/colors.scss';
 
 body {
-    background-color: colors.$app-grey;
-    color: colors.$app-font-color;
-    font-family: Ubuntu, "times new roman", times, roman, serif;
+  background-color: colors.$app-grey;
+  color: colors.$app-font-color;
+  font-family: Ubuntu, 'times new roman', times, roman, serif;
+}
+
+#root {
+  margin-left: 20%;
+  margin-right: 20%;
 }
