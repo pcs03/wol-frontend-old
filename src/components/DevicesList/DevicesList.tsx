@@ -1,6 +1,7 @@
 import React from 'react';
 import Device from '../Device/Device';
 import './DevicesList.scss';
+import { Stack } from '@mui/material';
 
 interface DevicesListProps {
   devices: Device[];
@@ -8,9 +9,10 @@ interface DevicesListProps {
 
 const DevicesList: React.FC<DevicesListProps> = ({ devices }) => {
   return (
-    <div className="devices-list">
+    <Stack className="devices-list">
       <Device device={devices[0]} />
-    </div>
+      <Device device={devices[1]} />
+    </Stack>
   );
 };
 

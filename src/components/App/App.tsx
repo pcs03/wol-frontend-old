@@ -1,9 +1,14 @@
 import './App.scss';
 import DevicesList from '../DevicesList/DevicesList';
-import DeviceInput from '../DeviceInput/DevicesInput';
+import DeviceInput from '../DeviceInput/DeviceInput';
 
 function App() {
   const deviceList = [
+    {
+      mac: 'FFFFFFFFFFFF',
+      name: 'server',
+      ip: '192.168.2.160',
+    },
     {
       mac: 'FFFFFFFFFFFF',
       name: 'server',
@@ -13,8 +18,8 @@ function App() {
 
   return (
     <>
-      <DevicesList devices={deviceList} />
       <DeviceInput />
+      <DevicesList devices={deviceList} />
     </>
   );
 }

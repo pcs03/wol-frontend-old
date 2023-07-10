@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import './DeviceInput.scss';
 
 const DeviceInput: React.FC = () => {
   const [id, setId] = useState('');
@@ -31,8 +32,15 @@ const DeviceInput: React.FC = () => {
 
   return (
     <form onSubmit={handleSubmit} className="device-input">
-      <input type="text" value={id} onChange={(e) => setId(e.target.value)} />
-      <button type="submit">Submit</button>
+      <input
+        className="device-input-field"
+        type="text"
+        value={id}
+        onChange={(e) => setId(e.target.value)}
+      />
+      <button className="device-input-submit" type="submit">
+        Submit
+      </button>
     </form>
   );
 };
