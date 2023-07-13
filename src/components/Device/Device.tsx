@@ -5,7 +5,7 @@ import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew';
 import './Device.scss';
 
 interface DeviceProps {
-  device: Device;
+  device: Device | undefined;
 }
 
 const Device: React.FC<DeviceProps> = ({ device }) => {
@@ -19,11 +19,13 @@ const Device: React.FC<DeviceProps> = ({ device }) => {
       <div className="device-icon">
         <StorageIcon />
       </div>
+      {device && (
       <div className="device-info">
         <p>{device.name}</p>
         <p>{device.mac}</p>
         <p>{device.ip}</p>
       </div>
+      )}
       <div className="device-buttons">
         <Button variant="outlined" className="button">
           Wake On LAN
