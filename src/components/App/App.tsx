@@ -1,43 +1,31 @@
 import './App.scss';
 import DevicesList from '../DevicesList/DevicesList';
 import DeviceInput from '../DeviceInput/DeviceInput';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, createContext, useContext } from 'react';
+import { DevicesProvider, DevicesContext } from '../../context/DeviceProvider';
 
 function App() {
-  const [deviceList, setDeviceList] = useState<Device[]>([]);
-
-  console.log("running")
-
-  // useEffect(() => {
-  //   fetch('http://localhost:5000/getDevices', {
-  //     method: 'GET',
-  //     headers: {
-  //       'Content-Type': 'applications/json',
-  //     }
-  //   })
-  //   .then(res => res.json())
-  //   .then(data => {
-  //     console.log(data);
-  //     setDeviceList(data);
-  //   });
-  // }, [])
+  const [devices, setDevices] = useState<Device[]>([]);
+  const value = { devices, setDevices };
 
   useEffect(() => {
-    const response = fetch('http://localhost:5000/addDevice', {
-      method: 'POST',
+    fetch('http://localhost:5000/getDevices', {
+      method: 'GET',
       headers: {
         'Content-Type': 'applications/json',
       },
-      body: JSON.stringify({name: "desktop", mac: "000000000000", ip: "192.168.2.162"})
     })
-
-  })
+      .then((res) => res.json())
+      .then((data) => {
+        setDevices(data['devices']);
+      });
+  }, []);
 
   return (
-    <>
+    <DevicesContext.Provider value={value}>
       <DeviceInput />
-      <DevicesList devices={deviceList} />
-    </>
+      <DevicesList />
+    </DevicesContext.Provider>
   );
 }
 

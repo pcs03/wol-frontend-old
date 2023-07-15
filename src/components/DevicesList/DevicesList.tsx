@@ -1,17 +1,17 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import Device from '../Device/Device';
 import './DevicesList.scss';
 import { Stack } from '@mui/material';
+import { DevicesContext } from '../../context/DeviceProvider';
 
-interface DevicesListProps {
-  devices: Device[];
-}
+const DevicesList: React.FC = () => {
+  const { devices, setDevices } = useContext(DevicesContext);
 
-const DevicesList: React.FC<DevicesListProps> = ({ devices }) => {
   return (
     <Stack className="devices-list">
-      <Device device={devices[0]} />
-      <Device device={devices[1]} />
+      {devices.map((device) => (
+        <Device device={device} key={device.mac} />
+      ))}
     </Stack>
   );
 };
