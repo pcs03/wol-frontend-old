@@ -1,8 +1,8 @@
 import './App.scss';
 import DevicesList from '../DevicesList/DevicesList';
 import DeviceInput from '../DeviceInput/DeviceInput';
-import { useEffect, useState, createContext, useContext } from 'react';
-import { DevicesProvider, DevicesContext } from '../../context/DeviceProvider';
+import { useEffect, useState } from 'react';
+import { DevicesContext } from '../../context/DeviceProvider';
 
 function App() {
   const [devices, setDevices] = useState<Device[]>([]);

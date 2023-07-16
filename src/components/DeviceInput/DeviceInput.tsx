@@ -3,8 +3,27 @@ import './DeviceInput.scss';
 import { FormikErrors, Formik, Field, ErrorMessage } from 'formik';
 import { DevicesContext } from '../../context/DeviceProvider';
 
+function capitalizeLetters(string: string) {
+  return string.replace(/[a-zA-Z]/g, (match) => {
+    return match.toUpperCase();
+  });
+}
+
 const DeviceInput: React.FC = () => {
-  const { devices, setDevices } = useContext(DevicesContext);
+  const { setDevices } = useContext(DevicesContext);
+
+  async function addDevice(payload: string) {
+    const response = await fetch('http://localhost:5000/addDevice', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: payload,
+    });
+    const body = await response.json();
+    console.log(body);
+    setDevices(body.devices);
+  }
 
   return (
     <Formik
@@ -41,34 +60,37 @@ const DeviceInput: React.FC = () => {
         return errors;
       }}
       onSubmit={(values) => {
-        fetch('http://localhost:5000/addDevice', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(values),
-        }).then((data) => {
-          console.log(data);
-        });
-        const newDevices = [...devices, values];
-        setDevices(newDevices);
+        values['mac'] = capitalizeLetters(values['mac']);
+        console.log(values);
+        const payload = JSON.stringify(values);
+        addDevice(payload);
       }}
     >
       {(formik) => (
-        <form onSubmit={formik.handleSubmit}>
-          <label htmlFor="name">Device Name</label>
-          <Field name="name" type="text" placeholder="Desktop" />
-          <ErrorMessage name="name" />
+        <form className="device-form" onSubmit={formik.handleSubmit}>
+          <div className="form-fields">
+            <div className="device-input">
+              <label htmlFor="name">Device Name</label>
+              <Field name="name" type="text" placeholder="Desktop" />
+              <ErrorMessage name="name" />
+            </div>
+            <div className="device-input">
+              <label htmlFor="mac">Device MAC Address</label>
+              <Field name="mac" type="text" placeholder="FFFFFFFFFFFF" />
+              <ErrorMessage name="mac" />
+            </div>
+            <div className="device-input">
+              <label htmlFor="ip">Device IP Address</label>
+              <Field name="ip" type="text" placeholder="0.0.0.0" />
+              <ErrorMessage name="ip" />
+            </div>
+          </div>
 
-          <label htmlFor="mac">Device MAC Address</label>
-          <Field name="mac" type="text" placeholder="FFFFFFFFFFFF" />
-          <ErrorMessage name="mac" />
-
-          <label htmlFor="ip">Device IP Address</label>
-          <Field name="ip" type="text" placeholder="0.0.0.0" />
-          <ErrorMessage name="ip" />
-
-          <button type="submit">Add</button>
+          <div className="form-submit-container">
+            <button type="submit" className="form-submit">
+              Add Device
+            </button>
+          </div>
         </form>
       )}
     </Formik>

@@ -1,31 +1,42 @@
-.device-input {
-  margin-bottom: 10px;
+.device-form {
+  margin-bottom: 1rem;
+}
+
+.form-fields {
   display: flex;
   flex-direction: row;
+  justify-content: center;
+}
 
-  .device-input-field {
-    margin-left: 5px;
-    margin-right: 10px;
-    width: 80%;
-    height: 1.5rem;
-    border-radius: 5px;
-    border-color: #fff;
-    background-color: rgba(255, 255, 255, 0.1);
+.device-input {
+  display: flex;
+  flex-direction: column;
+  margin: 0rem 0.25rem 0.5rem;
+  width: 10rem;
+
+  input {
+    border: none;
+    padding: 5px 10px;
+    font-size: 16px;
+    background-color: rgb(46, 46, 46);
+    color: white;
+    margin: 0.25rem 0rem 0.25rem;
   }
+}
 
-  .device-input-submit {
-    margin-right: 5px;
-    width: 20%;
-    border-color: #2c8ac9;
-    border-radius: 5px;
-    background-color: rgba(0, 0, 0, 0);
-    color: #f0f0f0;
-    font-weight: bold;
-    font-size: medium;
+.form-submit-container {
+  display: flex;
+  justify-content: center;
+}
 
-    &:hover {
-      background-color: rgba(100, 100, 100, 0.5);
-      cursor: pointer;
-    }
-  }
+.form-submit {
+  background-color: rgb(0, 136, 182);
+  border: none;
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  font-weight: bold;
+  padding: 5px 10px;
 }
