@@ -1,10 +1,11 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Storage, Delete } from '@mui/icons-material';
 import Button from '@mui/material/Button';
 import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew';
 import './Device.scss';
 import { IconButton } from '@mui/material';
 import { DevicesContext } from '../../context/DeviceProvider';
+import CachedIcon from '@mui/icons-material/Cached';
 
 interface DeviceProps {
   device: Device;
@@ -15,7 +16,7 @@ function formatMac(mac: string) {
 }
 
 async function sendWol(payload: string) {
-  const response = await fetch('http://localhost:5000/sendWol', {
+  const response = await fetch('http://192.168.2.162:5000/sendWol', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -28,11 +29,14 @@ async function sendWol(payload: string) {
 
 const Device: React.FC<DeviceProps> = ({ device }) => {
   const { setDevices } = useContext(DevicesContext);
+  const [deviceStatus, setDeviceStatus] = useState<boolean>();
 
-  const status = false;
+  useEffect(() => {
+    pingDevice();
+  }, [deviceStatus]);
 
   async function rmDevice(payload: string) {
-    const response = await fetch('http://localhost:5000/rmDevice', {
+    const response = await fetch('http://192.168.2.162:5000/rmDevice', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -42,6 +46,20 @@ const Device: React.FC<DeviceProps> = ({ device }) => {
     const body = await response.json();
     console.log(body);
     setDevices(body.devices);
+  }
+
+  async function pingDevice() {
+    const response = await fetch('http://192.168.2.162:5000/ping', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        ip: device.ip,
+      }),
+    });
+    const body = await response.json();
+    setDeviceStatus(body['status']);
   }
 
   return (
@@ -76,15 +94,20 @@ const Device: React.FC<DeviceProps> = ({ device }) => {
       </div>
       <PowerSettingsNewIcon
         className="device-status"
-        color={status ? 'success' : 'error'}
+        color={deviceStatus ? 'success' : 'error'}
       />
-      <IconButton
-        onClick={() => {
-          rmDevice(JSON.stringify({ mac: device.mac }));
-        }}
-      >
-        <Delete sx={{ color: 'white' }} />
-      </IconButton>
+      <div className="crud-buttons">
+        <IconButton
+          onClick={() => {
+            rmDevice(JSON.stringify({ mac: device.mac }));
+          }}
+        >
+          <Delete sx={{ color: 'white' }} />
+        </IconButton>
+        <IconButton onClick={pingDevice}>
+          <CachedIcon sx={{ color: 'white' }} />
+        </IconButton>
+      </div>
     </div>
   );
 };

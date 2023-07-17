@@ -9,7 +9,7 @@ function App() {
   const value = { devices, setDevices };
 
   useEffect(() => {
-    fetch('http://localhost:5000/getDevices', {
+    fetch('http://192.168.2.162:5000/getDevices', {
       method: 'GET',
       headers: {
         'Content-Type': 'applications/json',
