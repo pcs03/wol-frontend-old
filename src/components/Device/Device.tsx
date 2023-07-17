@@ -64,7 +64,9 @@ const Device: React.FC<DeviceProps> = ({ device }) => {
 
   return (
     <div className="device">
-      <Storage className="device-icon" />
+      <div>
+        <Storage className="device-icon" />
+      </div>
       {device && (
         <div className="device-info">
           <p>{device.name}</p>
@@ -92,10 +94,12 @@ const Device: React.FC<DeviceProps> = ({ device }) => {
           Shutdown
         </Button>
       </div>
-      <PowerSettingsNewIcon
-        className="device-status"
-        color={deviceStatus ? 'success' : 'error'}
-      />
+      <div>
+        <PowerSettingsNewIcon
+          className="device-status"
+          color={deviceStatus ? 'success' : 'error'}
+        />
+      </div>
       <div className="crud-buttons">
         <IconButton
           onClick={() => {

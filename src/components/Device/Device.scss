@@ -4,33 +4,56 @@
   border: 1px solid #ccc;
   border-radius: 5px;
   border-width: 2px;
-  padding: 10px;
+  padding: 5px;
   margin-bottom: 10px;
 
-  .device-icon,
-  .device-info,
-  .device-buttons,
-  .device-status {
-    display: flex;
-    align-items: center;
-    margin-right: 10px;
-    margin-left: 10px;
-  }
+  flex-grow: 1;
 
-  .device-info {
-    flex-direction: column;
-  }
-
-  p {
+  div {
     margin: 2px;
   }
+}
 
-  .device-buttons {
+.device-info {
+  text-align: left;
+
+  p {
+    line-height: 0.75rem;
+  }
+}
+
+.device-buttons {
+  display: flex;
+  flex-direction: column;
+
+  button {
+    margin: 2px 8px 2px;
+  }
+}
+
+.crud-buttons {
+  width: auto;
+  display: flex;
+}
+
+@media (min-width: 320px) {
+  /* smartphones, portrait iPhone, portrait 480x320 phones (Android) */
+  .device {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .crud-buttons {
+    flex-direction: row;
+  }
+}
+@media (min-width: 480px) {
+  /* smartphones, Android phones, landscape iPhone */
+  .device {
+    flex-wrap: nowrap;
+  }
+
+  .crud-buttons {
     flex-direction: column;
-
-    .button {
-      width: 100%;
-      margin: 2px;
-    }
   }
 }
