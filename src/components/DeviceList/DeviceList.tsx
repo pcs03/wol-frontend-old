@@ -1,10 +1,10 @@
 import React, { useContext } from 'react';
 import Device from '../Device/Device';
-import './DevicesList.scss';
+import './DeviceList.scss';
 import { Stack } from '@mui/material';
 import { DevicesContext } from '../../context/DeviceProvider';
 
-const DevicesList: React.FC = () => {
+const DeviceList: React.FC = () => {
   const { devices } = useContext(DevicesContext);
 
   return (
@@ -16,4 +16,4 @@ const DevicesList: React.FC = () => {
   );
 };
 
-export default DevicesList;
+export default DeviceList;
