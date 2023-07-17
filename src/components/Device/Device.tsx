@@ -10,6 +10,10 @@ interface DeviceProps {
   device: Device;
 }
 
+function formatMac(mac: string) {
+  return mac.replace(/(.{2})/g, '$1:').slice(0, -1);
+}
+
 async function sendWol(payload: string) {
   const response = await fetch('http://localhost:5000/sendWol', {
     method: 'POST',
@@ -46,7 +50,7 @@ const Device: React.FC<DeviceProps> = ({ device }) => {
       {device && (
         <div className="device-info">
           <p>{device.name}</p>
-          <p>{device.mac}</p>
+          <p>{formatMac(device.mac)}</p>
           <p>{device.ip}</p>
         </div>
       )}

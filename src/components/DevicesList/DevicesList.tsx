@@ -5,7 +5,7 @@ import { Stack } from '@mui/material';
 import { DevicesContext } from '../../context/DeviceProvider';
 
 const DevicesList: React.FC = () => {
-  const { devices, setDevices } = useContext(DevicesContext);
+  const { devices } = useContext(DevicesContext);
 
   return (
     <Stack className="devices-list">

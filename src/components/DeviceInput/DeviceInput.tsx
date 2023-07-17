@@ -4,9 +4,13 @@ import { FormikErrors, Formik, Field, ErrorMessage } from 'formik';
 import { DevicesContext } from '../../context/DeviceProvider';
 
 function capitalizeLetters(string: string) {
-  return string.replace(/[a-zA-Z]/g, (match) => {
+  const upperCase = string.replace(/[a-zA-Z]/g, (match) => {
     return match.toUpperCase();
   });
+  const noColon = upperCase.replace(/:/g, '');
+  const noHyphen = noColon.replace(/-/g, '');
+
+  return noHyphen;
 }
 
 const DeviceInput: React.FC = () => {
@@ -39,12 +43,16 @@ const DeviceInput: React.FC = () => {
         } else if (values.name.length > 15) {
           errors.name = 'Must be 15 characters or less';
         }
-
+        const macRegexSep = /^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$/;
         const macRegEx = /\b([0-9A-Fa-f]{12})\b/g;
 
         if (!values.mac) {
           errors.mac = 'Required';
-        } else if (!macRegEx.test(values.mac)) {
+        } else if (values.mac.length === 17 && !macRegexSep.test(values.mac)) {
+          errors.mac = 'Invalid MAC Address';
+        } else if (values.mac.length === 12 && !macRegEx.test(values.mac)) {
+          errors.mac = 'Invalid MAC Address';
+        } else if (values.mac.length !== 12 && values.mac.length !== 17) {
           errors.mac = 'Invalid MAC Address';
         }
 
