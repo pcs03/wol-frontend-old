@@ -17,7 +17,7 @@ const DeviceInput: React.FC = () => {
   const { setDevices } = useContext(DevicesContext);
 
   async function addDevice(payload: string) {
-    const response = await fetch('http://192.168.2.162:5000/addDevice', {
+    const response = await fetch('http://192.168.2.189:5000/addDevice', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

@@ -16,7 +16,7 @@ function formatMac(mac: string) {
 }
 
 async function sendWol(payload: string) {
-  const response = await fetch('http://192.168.2.162:5000/sendWol', {
+  const response = await fetch('http://192.168.2.189:5000/sendWol', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -35,21 +35,28 @@ const Device: React.FC<DeviceProps> = ({ device }) => {
     pingDevice();
   }, [deviceStatus]);
 
-  async function rmDevice(payload: string) {
-    const response = await fetch('http://192.168.2.162:5000/rmDevice', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: payload,
-    });
-    const body = await response.json();
-    console.log(body);
-    setDevices(body.devices);
+  async function rmDevice() {
+    const confirm = window.confirm(
+      'Are you sure you want to delete this device?',
+    );
+    if (confirm) {
+      const response = await fetch('http://192.168.2.189:5000/rmDevice', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          mac: device.mac,
+        }),
+      });
+      const body = await response.json();
+      console.log(body);
+      setDevices(body.devices);
+    }
   }
 
   async function pingDevice() {
-    const response = await fetch('http://192.168.2.162:5000/ping', {
+    const response = await fetch('http://192.168.2.189:5000/ping', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -101,11 +108,7 @@ const Device: React.FC<DeviceProps> = ({ device }) => {
         />
       </div>
       <div className="crud-buttons">
-        <IconButton
-          onClick={() => {
-            rmDevice(JSON.stringify({ mac: device.mac }));
-          }}
-        >
+        <IconButton onClick={rmDevice}>
           <Delete sx={{ color: 'white' }} />
         </IconButton>
         <IconButton onClick={pingDevice}>
