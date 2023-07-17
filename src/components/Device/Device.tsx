@@ -16,7 +16,7 @@ function formatMac(mac: string) {
 }
 
 async function sendWol(payload: string) {
-  const response = await fetch('http://192.168.2.189:5000/sendWol', {
+  const response = await fetch('http://localhost:5000/sendWol', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -40,7 +40,7 @@ const Device: React.FC<DeviceProps> = ({ device }) => {
       'Are you sure you want to delete this device?',
     );
     if (confirm) {
-      const response = await fetch('http://192.168.2.189:5000/rmDevice', {
+      const response = await fetch('http://localhost:5000/rmDevice', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -56,7 +56,7 @@ const Device: React.FC<DeviceProps> = ({ device }) => {
   }
 
   async function pingDevice() {
-    const response = await fetch('http://192.168.2.189:5000/ping', {
+    const response = await fetch('http://localhost:5000/ping', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
