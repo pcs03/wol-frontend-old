@@ -1,0 +1,60 @@
+@use '../../styles/colors.scss';
+
+#root {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+body {
+  background-color: colors.$app-grey;
+  color: colors.$app-font-color;
+  font-family: Ubuntu, 'times new roman', times, roman, serif;
+}
+
+@media (min-width: 320px) {
+  /* smartphones, iPhone, portrait 480x320 phones */
+  #root {
+    min-height: 80%;
+    width: 100%;
+  }
+}
+@media (min-width: 481px) {
+  /* portrait e-readers (Nook/Kindle), smaller tablets @ 600 or @ 640 wide. */
+
+  #root {
+    min-height: 80%;
+    width: 100%;
+  }
+}
+@media (min-width: 641px) {
+  /* portrait tablets, portrait iPad, landscape e-readers, landscape 800x480 or 854x480 phones */
+
+  #root {
+    min-height: 80%;
+    width: 100%;
+  }
+}
+@media (min-width: 961px) {
+  /* tablet, landscape iPad, lo-res laptops ands desktops */
+
+  #root {
+    min-height: 100vh;
+  }
+}
+@media (min-width: 1025px) {
+  /* big landscape tablets, laptops, and desktops */
+
+  #root {
+    min-height: 100vh;
+  }
+}
+@media (min-width: 1281px) {
+  /* hi-res laptops and desktops */
+
+  #root {
+    min-height: 100vh;
+  }
+}
