@@ -1,7 +1,6 @@
 import './Login.scss';
 import React, { useEffect, useState } from 'react';
 import { FormikErrors, Formik, Field, ErrorMessage } from 'formik';
-import { DevicesContext } from '../../context/DeviceProvider';
 import { useSignIn } from 'react-auth-kit';
 import { useNavigate } from 'react-router-dom';
 
@@ -13,6 +12,38 @@ interface LoginFormValues {
 const Login: React.FC = () => {
   const signIn = useSignIn();
   const navigate = useNavigate();
+  const [token, setToken] = useState();
+
+  async function login(payload: string) {
+    const response = await fetch('http://localhost:5000/token', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: payload,
+    });
+    const body = await response.json();
+    const token = body['access_token'];
+    console.log(body);
+    console.log(token);
+
+    if (token && token !== '') {
+      setToken(token);
+      signIn({
+        token: token,
+        expiresIn: 3600,
+        tokenType: 'Bearer',
+      });
+    }
+
+    console.log('Error login in');
+  }
+
+  useEffect(() => {
+    if (token && token !== '') {
+      navigate('/');
+    }
+  }, [token]);
 
   return (
     <Formik
@@ -28,25 +59,17 @@ const Login: React.FC = () => {
           errors.username = 'Must be 15 characters or less';
         }
 
-        if (!values.password) {
-          errors.password = 'Required';
-        } else if (values.password.length < 8) {
-          errors.password = 'Must be at least 8 characters';
-        }
-
         return errors;
       }}
       onSubmit={(values) => {
         console.log(values);
 
-        signIn({
-          token: 'test',
-          expiresIn: 3600,
-          tokenType: 'Bearer',
-          authState: { username: 'testuser' },
+        const payload = JSON.stringify({
+          username: values.username,
+          password: values.password,
         });
 
-        navigate('/');
+        login(payload);
       }}
     >
       {(formik) => (
@@ -57,7 +80,7 @@ const Login: React.FC = () => {
               <ErrorMessage name="username" />
             </div>
             <div className="device-input">
-              <Field name="password" type="text" placeholder="Password" />
+              <Field name="password" type="password" placeholder="Password" />
               <ErrorMessage name="password" />
             </div>
           </div>
