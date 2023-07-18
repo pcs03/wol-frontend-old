@@ -2,6 +2,8 @@ import './Login.scss';
 import React, { useEffect, useState } from 'react';
 import { FormikErrors, Formik, Field, ErrorMessage } from 'formik';
 import { DevicesContext } from '../../context/DeviceProvider';
+import { useSignIn } from 'react-auth-kit';
+import { useNavigate } from 'react-router-dom';
 
 interface LoginFormValues {
   username: string;
@@ -9,6 +11,9 @@ interface LoginFormValues {
 }
 
 const Login: React.FC = () => {
+  const signIn = useSignIn();
+  const navigate = useNavigate();
+
   return (
     <Formik
       initialValues={{
@@ -33,19 +38,25 @@ const Login: React.FC = () => {
       }}
       onSubmit={(values) => {
         console.log(values);
-        const payload = JSON.stringify(values);
+
+        signIn({
+          token: 'test',
+          expiresIn: 3600,
+          tokenType: 'Bearer',
+          authState: { username: 'testuser' },
+        });
+
+        navigate('/');
       }}
     >
       {(formik) => (
-        <form className="device-form" onSubmit={formik.handleSubmit}>
-          <div className="form-fields">
+        <form className="login-form" onSubmit={formik.handleSubmit}>
+          <div className="login-form-fields">
             <div className="device-input">
-              <label htmlFor="username">Username</label>
               <Field name="username" type="text" placeholder="Username" />
               <ErrorMessage name="username" />
             </div>
             <div className="device-input">
-              <label htmlFor="password">Password</label>
               <Field name="password" type="text" placeholder="Password" />
               <ErrorMessage name="password" />
             </div>
