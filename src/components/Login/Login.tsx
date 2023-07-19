@@ -1,5 +1,5 @@
 import './Login.scss';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { FormikErrors, Formik, Field, ErrorMessage } from 'formik';
 import { useSignIn } from 'react-auth-kit';
 import { useNavigate } from 'react-router-dom';
@@ -12,38 +12,32 @@ interface LoginFormValues {
 const Login: React.FC = () => {
   const signIn = useSignIn();
   const navigate = useNavigate();
-  const [token, setToken] = useState();
 
-  async function login(payload: string) {
-    const response = await fetch('http://localhost:5000/token', {
+  async function login(payload: { username: string; password: string }) {
+    const response = await fetch('http://localhost:5000/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: payload,
+      body: JSON.stringify(payload),
     });
     const body = await response.json();
-    const token = body['access_token'];
-    console.log(body);
-    console.log(token);
+    const token = body['token'];
+    const expIn = body['exp'];
 
     if (token && token !== '') {
-      setToken(token);
       signIn({
         token: token,
-        expiresIn: 3600,
+        expiresIn: expIn,
         tokenType: 'Bearer',
+        authState: { username: payload.username },
       });
-    }
 
-    console.log('Error login in');
-  }
-
-  useEffect(() => {
-    if (token && token !== '') {
       navigate('/');
+    } else {
+      console.log('Error login in');
     }
-  }, [token]);
+  }
 
   return (
     <Formik
@@ -64,10 +58,10 @@ const Login: React.FC = () => {
       onSubmit={(values) => {
         console.log(values);
 
-        const payload = JSON.stringify({
+        const payload = {
           username: values.username,
           password: values.password,
-        });
+        };
 
         login(payload);
       }}
