@@ -77,8 +77,8 @@ const Device: React.FC<DeviceProps> = ({ device }) => {
       {device && (
         <div className="device-info">
           <p>{device.name}</p>
+          <p>{device.username + '@' + device.ip}</p>
           <p>{formatMac(device.mac)}</p>
-          <p>{device.ip}</p>
         </div>
       )}
       <div className="device-buttons">

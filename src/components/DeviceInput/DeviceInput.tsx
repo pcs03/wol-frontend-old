@@ -33,6 +33,7 @@ const DeviceInput: React.FC = () => {
     <Formik
       initialValues={{
         name: '',
+        username: '',
         mac: '',
         ip: '',
       }}
@@ -43,6 +44,15 @@ const DeviceInput: React.FC = () => {
         } else if (values.name.length > 15) {
           errors.name = 'Must be 15 characters or less';
         }
+
+        const usernameRegEx = /^[a-z_]([a-z0-9_-]{0,31}|[a-z0-9_-]{0,30}\$)$/;
+
+        if (!values.username) {
+          errors.username = 'Required';
+        } else if (!usernameRegEx.test(values.username)) {
+          errors.username = 'Not a valid Linux username';
+        }
+
         const macRegexSep = /^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$/;
         const macRegEx = /\b([0-9A-Fa-f]{12})\b/g;
 
@@ -81,6 +91,11 @@ const DeviceInput: React.FC = () => {
               <label htmlFor="name">Device Name</label>
               <Field name="name" type="text" placeholder="Desktop" />
               <ErrorMessage name="name" />
+            </div>
+            <div className="device-input">
+              <label htmlFor="username">User Name</label>
+              <Field name="username" type="text" placeholder="john" />
+              <ErrorMessage name="username" />
             </div>
             <div className="device-input">
               <label htmlFor="mac">Device MAC Address</label>
