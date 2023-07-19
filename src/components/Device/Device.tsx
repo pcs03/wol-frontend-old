@@ -15,18 +15,6 @@ function formatMac(mac: string) {
   return mac.replace(/(.{2})/g, '$1:').slice(0, -1);
 }
 
-async function sendWol(payload: string) {
-  const response = await fetch('http://localhost:5000/sendWol', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: payload,
-  });
-  const body = await response.json();
-  console.log(body);
-}
-
 const Device: React.FC<DeviceProps> = ({ device }) => {
   const { setDevices } = useContext(DevicesContext);
   const [deviceStatus, setDeviceStatus] = useState<boolean>();
@@ -34,6 +22,26 @@ const Device: React.FC<DeviceProps> = ({ device }) => {
   useEffect(() => {
     pingDevice();
   }, [deviceStatus]);
+
+  async function sendWol() {
+    const response = await fetch('http://localhost:5000/sendWol', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        mac: device.mac,
+      }),
+    });
+    const body = await response.json();
+
+    if (body.message === 'Magic packet sent') {
+      setTimeout(() => {
+        console.log('timeout');
+        setDeviceStatus(true);
+      }, 40000);
+    }
+  }
 
   async function rmDevice() {
     const confirm = window.confirm(
@@ -69,6 +77,36 @@ const Device: React.FC<DeviceProps> = ({ device }) => {
     setDeviceStatus(body['status']);
   }
 
+  async function sendShutdown() {
+    const confirm = window.confirm(
+      'Are you sure you want to shutdown this device?',
+    );
+    if (confirm) {
+      const response = await fetch('http://localhost:5000/shutdown', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          username: device.username,
+          ip: device.ip,
+        }),
+      });
+
+      const body = await response.json();
+      console.log(body['status']);
+
+      if (new RegExp('closed by remote host').test(body['status'])) {
+        console.log('turning off');
+
+        setTimeout(() => {
+          console.log('timeout');
+          setDeviceStatus(false);
+        }, 10000);
+      }
+    }
+  }
+
   return (
     <div className="device">
       <div>
@@ -89,7 +127,7 @@ const Device: React.FC<DeviceProps> = ({ device }) => {
             background: 'grey',
           }}
           className="button"
-          onClick={() => sendWol(JSON.stringify({ mac: device.mac }))}
+          onClick={sendWol}
         >
           Wake On LAN
         </Button>
@@ -97,6 +135,7 @@ const Device: React.FC<DeviceProps> = ({ device }) => {
           variant="contained"
           sx={{ color: 'white', background: 'grey' }}
           className="button"
+          onClick={sendShutdown}
         >
           Shutdown
         </Button>
