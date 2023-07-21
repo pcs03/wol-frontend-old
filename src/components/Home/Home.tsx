@@ -9,7 +9,7 @@ function Home() {
   const value = { devices, setDevices };
 
   useEffect(() => {
-    fetch('http://localhost:5000/getDevices', {
+    fetch(`http://${import.meta.env.VITE_API_HOST}/getDevices`, {
       method: 'GET',
       headers: {
         'Content-Type': 'applications/json',

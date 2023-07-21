@@ -24,15 +24,18 @@ const Device: React.FC<DeviceProps> = ({ device }) => {
   }, [deviceStatus]);
 
   async function sendWol() {
-    const response = await fetch('http://localhost:5000/sendWol', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
+    const response = await fetch(
+      `http://${import.meta.env.VITE_API_HOST}:5000/sendWol`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          mac: device.mac,
+        }),
       },
-      body: JSON.stringify({
-        mac: device.mac,
-      }),
-    });
+    );
     const body = await response.json();
 
     if (body.message === 'Magic packet sent') {
@@ -48,15 +51,18 @@ const Device: React.FC<DeviceProps> = ({ device }) => {
       'Are you sure you want to delete this device?',
     );
     if (confirm) {
-      const response = await fetch('http://localhost:5000/rmDevice', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      const response = await fetch(
+        `http://${import.meta.env.VITE_API_HOST}/rmDevice`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            mac: device.mac,
+          }),
         },
-        body: JSON.stringify({
-          mac: device.mac,
-        }),
-      });
+      );
       const body = await response.json();
       console.log(body);
       setDevices(body.devices);
@@ -64,15 +70,18 @@ const Device: React.FC<DeviceProps> = ({ device }) => {
   }
 
   async function pingDevice() {
-    const response = await fetch('http://localhost:5000/ping', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
+    const response = await fetch(
+      `http://${import.meta.env.VITE_API_HOST}/ping`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ip: device.ip,
+        }),
       },
-      body: JSON.stringify({
-        ip: device.ip,
-      }),
-    });
+    );
     const body = await response.json();
     setDeviceStatus(body['status']);
   }
@@ -82,16 +91,19 @@ const Device: React.FC<DeviceProps> = ({ device }) => {
       'Are you sure you want to shutdown this device?',
     );
     if (confirm) {
-      const response = await fetch('http://localhost:5000/shutdown', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      const response = await fetch(
+        `http://${import.meta.env.VITE_API_HOST}/shutdown`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            username: device.username,
+            ip: device.ip,
+          }),
         },
-        body: JSON.stringify({
-          username: device.username,
-          ip: device.ip,
-        }),
-      });
+      );
 
       const body = await response.json();
       console.log(body['status']);

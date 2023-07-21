@@ -17,13 +17,16 @@ const DeviceInput: React.FC = () => {
   const { setDevices } = useContext(DevicesContext);
 
   async function addDevice(payload: string) {
-    const response = await fetch('http://localhost:5000/addDevice', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
+    const response = await fetch(
+      `http://${import.meta.env.VITE_API_HOST}/addDevice`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: payload,
       },
-      body: payload,
-    });
+    );
     const body = await response.json();
     console.log(body);
     setDevices(body.devices);

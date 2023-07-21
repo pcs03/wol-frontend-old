@@ -14,13 +14,16 @@ const Login: React.FC = () => {
   const navigate = useNavigate();
 
   async function login(payload: { username: string; password: string }) {
-    const response = await fetch('http://localhost:5000/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
+    const response = await fetch(
+      `http://${import.meta.env.VITE_API_HOST}/login`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
       },
-      body: JSON.stringify(payload),
-    });
+    );
     const body = await response.json();
     const token = body['token'];
     const expIn = body['exp'];
