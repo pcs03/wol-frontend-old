@@ -1,11 +1,11 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Storage, Delete } from '@mui/icons-material';
-import Button from '@mui/material/Button';
 import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew';
 import './Device.scss';
 import { IconButton } from '@mui/material';
 import { DevicesContext } from '../../context/DeviceProvider';
 import CachedIcon from '@mui/icons-material/Cached';
+import { LoadingButton } from '@mui/lab';
 
 interface DeviceProps {
   device: Device;
@@ -18,12 +18,15 @@ function formatMac(mac: string) {
 const Device: React.FC<DeviceProps> = ({ device }) => {
   const { setDevices } = useContext(DevicesContext);
   const [deviceStatus, setDeviceStatus] = useState<boolean>();
+  const [shutdownLoading, setShutdownLoading] = useState<boolean>(false);
+  const [wakeLoading, setWakeLoading] = useState<boolean>(false);
 
   useEffect(() => {
     pingDevice();
   }, [deviceStatus]);
 
   async function sendWol() {
+    setWakeLoading(true);
     const response = await fetch(
       `http://${import.meta.env.VITE_API_HOST}/sendWol`,
       {
@@ -42,6 +45,7 @@ const Device: React.FC<DeviceProps> = ({ device }) => {
       setTimeout(() => {
         console.log('timeout');
         setDeviceStatus(true);
+        setWakeLoading(false);
       }, 40000);
     }
   }
@@ -91,6 +95,7 @@ const Device: React.FC<DeviceProps> = ({ device }) => {
   }
 
   async function sendShutdown() {
+    setShutdownLoading(true);
     const confirm = window.confirm(
       'Are you sure you want to shutdown this device?',
     );
@@ -118,6 +123,7 @@ const Device: React.FC<DeviceProps> = ({ device }) => {
         setTimeout(() => {
           console.log('timeout');
           setDeviceStatus(false);
+          setShutdownLoading(false);
         }, 10000);
       }
     }
@@ -136,7 +142,8 @@ const Device: React.FC<DeviceProps> = ({ device }) => {
         </div>
       )}
       <div className="device-buttons">
-        <Button
+        <LoadingButton
+          loading={wakeLoading}
           variant="contained"
           sx={{
             color: 'white',
@@ -146,15 +153,16 @@ const Device: React.FC<DeviceProps> = ({ device }) => {
           onClick={sendWol}
         >
           Wake On LAN
-        </Button>
-        <Button
+        </LoadingButton>
+        <LoadingButton
+          loading={shutdownLoading}
           variant="contained"
           sx={{ color: 'white', background: 'grey' }}
           className="button"
           onClick={sendShutdown}
         >
           Shutdown
-        </Button>
+        </LoadingButton>
       </div>
       <div>
         <PowerSettingsNewIcon
