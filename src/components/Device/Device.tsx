@@ -25,7 +25,7 @@ const Device: React.FC<DeviceProps> = ({ device }) => {
 
   async function sendWol() {
     const response = await fetch(
-      `http://${import.meta.env.VITE_API_HOST}:5000/sendWol`,
+      `http://${import.meta.env.VITE_API_HOST}/sendWol`,
       {
         method: 'POST',
         headers: {
