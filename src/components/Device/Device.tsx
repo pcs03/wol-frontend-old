@@ -70,6 +70,9 @@ const Device: React.FC<DeviceProps> = ({ device }) => {
   }
 
   async function pingDevice() {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 1000);
+
     const response = await fetch(
       `http://${import.meta.env.VITE_API_HOST}/ping`,
       {
@@ -80,8 +83,10 @@ const Device: React.FC<DeviceProps> = ({ device }) => {
         body: JSON.stringify({
           ip: device.ip,
         }),
+        signal: controller.signal,
       },
     );
+
     const body = await response.json();
     setDeviceStatus(body['status']);
   }
