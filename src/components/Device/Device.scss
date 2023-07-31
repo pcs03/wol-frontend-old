@@ -1,7 +1,9 @@
+@use '../../styles/colors.scss';
+
 .device {
   display: flex;
   align-items: center;
-  border: 1px solid #ccc;
+  border: 1px solid rgb(62, 68, 70);
   border-radius: 5px;
   border-width: 2px;
   padding: 5px;
@@ -28,6 +30,7 @@
 
   button {
     margin: 2px 8px 2px;
+    background-color: rgb(96, 104, 108);
   }
 }
 
