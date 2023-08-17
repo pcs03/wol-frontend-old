@@ -1,125 +1,82 @@
 import { useContext } from 'react';
 import './DeviceInput.scss';
-import { FormikErrors, Formik, Field, ErrorMessage } from 'formik';
 import { DevicesContext } from '../../context/DeviceProvider';
-
-function capitalizeLetters(string: string) {
-  const upperCase = string.replace(/[a-zA-Z]/g, (match) => {
-    return match.toUpperCase();
-  });
-  const noColon = upperCase.replace(/:/g, '');
-  const noHyphen = noColon.replace(/-/g, '');
-
-  return noHyphen;
-}
+import { yupResolver } from '@hookform/resolvers/yup';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import { object, string } from 'yup';
 
 const DeviceInput: React.FC = () => {
   const { setDevices } = useContext(DevicesContext);
 
+  const usernamePattern = /^[a-z_]([a-z0-9_-]{0,31}|[a-z0-9_-]{0,30}\$)$/;
+  const ipPattern = /^((25[0-5]|(2[0-4]|1\d|[1-9]|)\d)\.?\b){4}$/;
+  const macPattern = /^([0-9A-Fa-f]{12}|([0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2})$/;
+
+  const userSchema = object({
+    name: string().required('Required').max(15, 'Too long'),
+    username: string().required('Required').matches(usernamePattern, 'Not a valid username'),
+    mac: string().required('Required').matches(macPattern, 'Not a valid MAC Address').uppercase(),
+    ip: string().required('Required').matches(ipPattern, 'Not a valid IP Address'),
+  });
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(userSchema),
+  });
+
+  const onSubmit: SubmitHandler<Device> = (data) => {
+    console.log(data);
+    const payload = JSON.stringify(data);
+    addDevice(payload);
+  };
+
   async function addDevice(payload: string) {
-    const response = await fetch(
-      `http://${import.meta.env.VITE_API_HOST}/addDevice`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: payload,
+    const response = await fetch(`http://${import.meta.env.VITE_API_HOST}/addDevice`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
       },
-    );
+      body: payload,
+    });
     const body = await response.json();
     console.log(body);
     setDevices(body.devices);
   }
 
   return (
-    <Formik
-      initialValues={{
-        name: '',
-        username: '',
-        mac: '',
-        ip: '',
-      }}
-      validate={(values: Device) => {
-        const errors: FormikErrors<Device> = {};
-        if (!values.name) {
-          errors.name = 'Required';
-        } else if (values.name.length > 15) {
-          errors.name = 'Must be 15 characters or less';
-        }
+    <form className="device-form" onSubmit={handleSubmit(onSubmit)}>
+      <div className="form-fields">
+        <div className="device-input">
+          <label htmlFor="name">Device Name</label>
+          <input {...register('name')} placeholder="Desktop" />
+          <p>{errors.name?.message}</p>
+        </div>
+        <div className="device-input">
+          <label htmlFor="username">User Name</label>
+          <input {...register('username')} placeholder="john" />
+          <p>{errors.username?.message}</p>
+        </div>
+        <div className="device-input">
+          <label htmlFor="mac">Device MAC Address</label>
+          <input {...register('mac')} placeholder="FFFFFFFFFFFF" />
+          <p>{errors.mac?.message}</p>
+        </div>
+        <div className="device-input">
+          <label htmlFor="ip">Device IP Address</label>
+          <input {...register('ip')} placeholder="0.0.0.0" />
+          <p>{errors.ip?.message}</p>
+        </div>
+      </div>
 
-        const usernameRegEx = /^[a-z_]([a-z0-9_-]{0,31}|[a-z0-9_-]{0,30}\$)$/;
-
-        if (!values.username) {
-          errors.username = 'Required';
-        } else if (!usernameRegEx.test(values.username)) {
-          errors.username = 'Not a valid Linux username';
-        }
-
-        const macRegexSep = /^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$/;
-        const macRegEx = /\b([0-9A-Fa-f]{12})\b/g;
-
-        if (!values.mac) {
-          errors.mac = 'Required';
-        } else if (values.mac.length === 17 && !macRegexSep.test(values.mac)) {
-          errors.mac = 'Invalid MAC Address';
-        } else if (values.mac.length === 12 && !macRegEx.test(values.mac)) {
-          errors.mac = 'Invalid MAC Address';
-        } else if (values.mac.length !== 12 && values.mac.length !== 17) {
-          errors.mac = 'Invalid MAC Address';
-        }
-
-        const ipRegEx =
-          /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
-
-        if (!values.ip) {
-          errors.ip = 'Required';
-        } else if (!ipRegEx.test(values.ip)) {
-          errors.ip = 'Invalid IP Address';
-        }
-
-        return errors;
-      }}
-      onSubmit={(values) => {
-        values['mac'] = capitalizeLetters(values['mac']);
-        console.log(values);
-        const payload = JSON.stringify(values);
-        addDevice(payload);
-      }}
-    >
-      {(formik) => (
-        <form className="device-form" onSubmit={formik.handleSubmit}>
-          <div className="form-fields">
-            <div className="device-input">
-              <label htmlFor="name">Device Name</label>
-              <Field name="name" type="text" placeholder="Desktop" />
-              <ErrorMessage name="name" />
-            </div>
-            <div className="device-input">
-              <label htmlFor="username">User Name</label>
-              <Field name="username" type="text" placeholder="john" />
-              <ErrorMessage name="username" />
-            </div>
-            <div className="device-input">
-              <label htmlFor="mac">Device MAC Address</label>
-              <Field name="mac" type="text" placeholder="FFFFFFFFFFFF" />
-              <ErrorMessage name="mac" />
-            </div>
-            <div className="device-input">
-              <label htmlFor="ip">Device IP Address</label>
-              <Field name="ip" type="text" placeholder="0.0.0.0" />
-              <ErrorMessage name="ip" />
-            </div>
-          </div>
-
-          <div className="form-submit-container">
-            <button type="submit" className="form-submit">
-              Add Device
-            </button>
-          </div>
-        </form>
-      )}
-    </Formik>
+      <div className="form-submit-container">
+        <button type="submit" className="form-submit">
+          Add Device
+        </button>
+      </div>
+    </form>
   );
 };
 
