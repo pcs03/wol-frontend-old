@@ -12,7 +12,11 @@ interface DeviceProps {
 }
 
 function formatMac(mac: string) {
-  return mac.replace(/(.{2})/g, '$1:').slice(0, -1);
+  if (!/^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$/.test(mac)) {
+    return mac.match(/.{1,2}/g)?.join(':');
+  } else {
+    return mac;
+  }
 }
 
 const Device: React.FC<DeviceProps> = ({ device }) => {
