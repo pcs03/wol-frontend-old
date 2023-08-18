@@ -19,7 +19,7 @@ const Login: React.FC = () => {
     formState: { errors },
   } = useForm<LoginFormValues>();
 
-  const onSubmit: SubmitHandler<LoginFormValues> = (data) => {
+  const onSubmit: SubmitHandler<LoginFormValues> = (data: LoginFormValues) => {
     const payload = {
       username: data.username,
       password: data.password,

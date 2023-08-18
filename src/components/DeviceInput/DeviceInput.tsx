@@ -27,7 +27,7 @@ const DeviceInput: React.FC = () => {
     resolver: yupResolver(userSchema),
   });
 
-  const onSubmit: SubmitHandler<Device> = (data) => {
+  const onSubmit: SubmitHandler<Device> = (data: Device) => {
     console.log(data);
     const payload = JSON.stringify(data);
     addDevice(payload);
