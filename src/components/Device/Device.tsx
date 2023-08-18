@@ -23,13 +23,43 @@ const Device: React.FC<DeviceProps> = ({ device }) => {
 
   useEffect(() => {
     pingDevice();
-  }, [deviceStatus]);
+  }, []);
 
   async function sendWol() {
     setWakeLoading(true);
-    const response = await fetch(
-      `http://${import.meta.env.VITE_API_HOST}/sendWol`,
-      {
+    const response = await fetch(`http://${import.meta.env.VITE_API_HOST}/sendWol`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        mac: device.mac,
+      }),
+    });
+    const body = await response.json();
+
+    if (body.message === 'Magic packet sent') {
+      let counter = 0;
+      const intervalId = window.setInterval(async () => {
+        const status = await pingDevice();
+        console.log(counter, deviceStatus);
+
+        if (status || counter >= 30) {
+          setWakeLoading(false);
+          clearInterval(intervalId);
+        }
+
+        counter++;
+      }, 2000);
+    } else {
+      setWakeLoading(false);
+    }
+  }
+
+  async function rmDevice() {
+    const confirm = window.confirm('Are you sure you want to delete this device?');
+    if (confirm) {
+      const response = await fetch(`http://${import.meta.env.VITE_API_HOST}/rmDevice`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -37,36 +67,7 @@ const Device: React.FC<DeviceProps> = ({ device }) => {
         body: JSON.stringify({
           mac: device.mac,
         }),
-      },
-    );
-    const body = await response.json();
-
-    if (body.message === 'Magic packet sent') {
-      setTimeout(() => {
-        console.log('timeout');
-        setDeviceStatus(true);
-        setWakeLoading(false);
-      }, 40000);
-    }
-  }
-
-  async function rmDevice() {
-    const confirm = window.confirm(
-      'Are you sure you want to delete this device?',
-    );
-    if (confirm) {
-      const response = await fetch(
-        `http://${import.meta.env.VITE_API_HOST}/rmDevice`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            mac: device.mac,
-          }),
-        },
-      );
+      });
       const body = await response.json();
       console.log(body);
       setDevices(body.devices);
@@ -74,45 +75,36 @@ const Device: React.FC<DeviceProps> = ({ device }) => {
   }
 
   async function pingDevice() {
-    const controller = new AbortController();
+    const response = await fetch(`http://${import.meta.env.VITE_API_HOST}/ping`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        ip: device.ip,
+      }),
+    });
 
-    const response = await fetch(
-      `http://${import.meta.env.VITE_API_HOST}/ping`,
-      {
+    const body = await response.json();
+    setDeviceStatus(body['status']);
+
+    return body['status'];
+  }
+
+  async function sendShutdown() {
+    setShutdownLoading(true);
+    const confirm = window.confirm('Are you sure you want to shutdown this device?');
+    if (confirm) {
+      const response = await fetch(`http://${import.meta.env.VITE_API_HOST}/shutdown`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
+          username: device.username,
           ip: device.ip,
         }),
-        signal: controller.signal,
-      },
-    );
-
-    const body = await response.json();
-    setDeviceStatus(body['status']);
-  }
-
-  async function sendShutdown() {
-    setShutdownLoading(true);
-    const confirm = window.confirm(
-      'Are you sure you want to shutdown this device?',
-    );
-    if (confirm) {
-      const response = await fetch(
-        `http://${import.meta.env.VITE_API_HOST}/shutdown`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            username: device.username,
-            ip: device.ip,
-          }),
-        },
-      );
+      });
 
       const body = await response.json();
       console.log(body['status']);
@@ -120,11 +112,20 @@ const Device: React.FC<DeviceProps> = ({ device }) => {
       if (new RegExp('closed by remote host').test(body['status'])) {
         console.log('turning off');
 
-        setTimeout(() => {
-          console.log('timeout');
-          setDeviceStatus(false);
-          setShutdownLoading(false);
-        }, 10000);
+        let counter = 0;
+        const intervalId = window.setInterval(async () => {
+          const status = await pingDevice();
+          console.log(counter, status);
+
+          if (!status || counter >= 30) {
+            setShutdownLoading(false);
+            clearInterval(intervalId);
+          }
+
+          counter++;
+        }, 2000);
+      } else {
+        setShutdownLoading(false);
       }
     }
   }
@@ -165,10 +166,7 @@ const Device: React.FC<DeviceProps> = ({ device }) => {
         </LoadingButton>
       </div>
       <div>
-        <PowerSettingsNewIcon
-          className="device-status"
-          color={deviceStatus ? 'success' : 'error'}
-        />
+        <PowerSettingsNewIcon className="device-status" color={deviceStatus ? 'success' : 'error'} />
       </div>
       <div className="crud-buttons">
         <IconButton onClick={rmDevice}>
