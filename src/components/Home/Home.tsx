@@ -9,7 +9,7 @@ function Home() {
   const value = { devices, setDevices };
 
   useEffect(() => {
-    fetch(`http://${import.meta.env.VITE_API_HOST}/getDevices`, {
+    fetch(`http://${import.meta.env.VITE_API_HOST}/devices`, {
       method: 'GET',
       headers: {
         'Content-Type': 'applications/json',
@@ -17,7 +17,7 @@ function Home() {
     })
       .then((res) => res.json())
       .then((data) => {
-        setDevices(data['devices']);
+        setDevices(data);
       });
   }, []);
 

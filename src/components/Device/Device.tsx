@@ -31,14 +31,11 @@ const Device: React.FC<DeviceProps> = ({ device }) => {
 
   async function sendWol() {
     setWakeLoading(true);
-    const response = await fetch(`http://${import.meta.env.VITE_API_HOST}/sendWol`, {
-      method: 'POST',
+    const response = await fetch(`http://${import.meta.env.VITE_API_HOST}/wol/${device.id}`, {
+      method: 'GET',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        mac: device.mac,
-      }),
     });
     const body = await response.json();
 
@@ -63,30 +60,23 @@ const Device: React.FC<DeviceProps> = ({ device }) => {
   async function rmDevice() {
     const confirm = window.confirm('Are you sure you want to delete this device?');
     if (confirm) {
-      const response = await fetch(`http://${import.meta.env.VITE_API_HOST}/rmDevice`, {
-        method: 'POST',
+      const response = await fetch(`http://${import.meta.env.VITE_API_HOST}/devices/${device.id}`, {
+        method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          mac: device.mac,
-        }),
       });
       const body = await response.json();
-      console.log(body);
-      setDevices(body.devices);
+      setDevices(body);
     }
   }
 
   async function pingDevice() {
-    const response = await fetch(`http://${import.meta.env.VITE_API_HOST}/ping`, {
-      method: 'POST',
+    const response = await fetch(`http://${import.meta.env.VITE_API_HOST}/ping/${device.id}`, {
+      method: 'GET',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        ip: device.ip,
-      }),
     });
 
     const body = await response.json();
@@ -99,15 +89,11 @@ const Device: React.FC<DeviceProps> = ({ device }) => {
     setShutdownLoading(true);
     const confirm = window.confirm('Are you sure you want to shutdown this device?');
     if (confirm) {
-      const response = await fetch(`http://${import.meta.env.VITE_API_HOST}/shutdown`, {
+      const response = await fetch(`http://${import.meta.env.VITE_API_HOST}/shutdown/${device.id}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          username: device.username,
-          ip: device.ip,
-        }),
       });
 
       const body = await response.json();

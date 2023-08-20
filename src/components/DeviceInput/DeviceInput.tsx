@@ -5,6 +5,13 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { object, string } from 'yup';
 
+type DeviceInput = {
+  devicename: string;
+  username: string;
+  ip: string;
+  mac: string;
+};
+
 const DeviceInput: React.FC = () => {
   const { setDevices } = useContext(DevicesContext);
 
@@ -13,7 +20,7 @@ const DeviceInput: React.FC = () => {
   const macPattern = /^([0-9A-Fa-f]{12}|([0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2})$/;
 
   const userSchema = object({
-    name: string().required('Required').max(15, 'Too long'),
+    devicename: string().required('Required').max(15, 'Too long'),
     username: string().required('Required').matches(usernamePattern, 'Not a valid username'),
     mac: string().required('Required').matches(macPattern, 'Not a valid MAC Address').uppercase(),
     ip: string().required('Required').matches(ipPattern, 'Not a valid IP Address'),
@@ -27,14 +34,14 @@ const DeviceInput: React.FC = () => {
     resolver: yupResolver(userSchema),
   });
 
-  const onSubmit: SubmitHandler<Device> = (data: Device) => {
+  const onSubmit: SubmitHandler<DeviceInput> = (data: DeviceInput) => {
     console.log(data);
     const payload = JSON.stringify(data);
     addDevice(payload);
   };
 
   async function addDevice(payload: string) {
-    const response = await fetch(`http://${import.meta.env.VITE_API_HOST}/addDevice`, {
+    const response = await fetch(`http://${import.meta.env.VITE_API_HOST}/devices`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -42,17 +49,16 @@ const DeviceInput: React.FC = () => {
       body: payload,
     });
     const body = await response.json();
-    console.log(body);
-    setDevices(body.devices);
+    setDevices(body);
   }
 
   return (
     <form className="device-form" onSubmit={handleSubmit(onSubmit)}>
       <div className="form-fields">
         <div className="device-input">
-          <label htmlFor="name">Device Name</label>
-          <input {...register('name')} placeholder="Desktop" />
-          <p>{errors.name?.message}</p>
+          <label htmlFor="devicename">Device Name</label>
+          <input {...register('devicename')} placeholder="Desktop" />
+          <p>{errors.devicename?.message}</p>
         </div>
         <div className="device-input">
           <label htmlFor="username">User Name</label>

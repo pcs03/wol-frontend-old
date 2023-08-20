@@ -37,13 +37,14 @@ const Login: React.FC = () => {
       body: JSON.stringify(payload),
     });
     const body = await response.json();
+    const success = body['success'];
     const token = body['token'];
     const expIn = body['exp'];
 
-    if (token && token !== '') {
+    if (success) {
       signIn({
         token: token,
-        expiresIn: expIn,
+        expiresIn: expIn / 60,
         tokenType: 'Bearer',
         authState: { username: payload.username },
       });

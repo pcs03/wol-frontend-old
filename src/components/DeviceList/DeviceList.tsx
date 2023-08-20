@@ -10,7 +10,7 @@ const DeviceList: React.FC = () => {
   return (
     <Stack className="devices-list">
       {devices.map((device) => (
-        <Device device={device} key={device.mac} />
+        <Device device={device} key={device.id} />
       ))}
     </Stack>
   );
