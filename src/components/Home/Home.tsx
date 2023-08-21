@@ -1,6 +1,5 @@
 import './Home.scss';
 import DeviceList from '../DeviceList/DeviceList';
-import DeviceInput from '../DeviceInput/DeviceInput';
 import { useEffect, useState } from 'react';
 import { DevicesContext } from '../../context/DeviceProvider';
 
@@ -23,7 +22,6 @@ function Home() {
 
   return (
     <DevicesContext.Provider value={value}>
-      <DeviceInput />
       <DeviceList />
     </DevicesContext.Provider>
   );

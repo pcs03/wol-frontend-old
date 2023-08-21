@@ -4,11 +4,13 @@ import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew';
 import './Device.scss';
 import { IconButton } from '@mui/material';
 import { DevicesContext } from '../../context/DeviceProvider';
-import CachedIcon from '@mui/icons-material/Cached';
+import SensorsIcon from '@mui/icons-material/Sensors';
 import { LoadingButton } from '@mui/lab';
+import UpdateIcon from '@mui/icons-material/Update';
 
 interface DeviceProps {
   device: Device;
+  onUpdate: (id: number, formFields: DeviceInputFields) => void;
 }
 
 function formatMac(mac: string) {
@@ -19,11 +21,13 @@ function formatMac(mac: string) {
   }
 }
 
-const Device: React.FC<DeviceProps> = ({ device }) => {
+const Device: React.FC<DeviceProps> = ({ device, onUpdate }) => {
   const { devices, setDevices } = useContext(DevicesContext);
   const [deviceStatus, setDeviceStatus] = useState<boolean>();
   const [shutdownLoading, setShutdownLoading] = useState<boolean>(false);
   const [wakeLoading, setWakeLoading] = useState<boolean>(false);
+
+  console.log(device);
 
   useEffect(() => {
     pingDevice();
@@ -135,7 +139,7 @@ const Device: React.FC<DeviceProps> = ({ device }) => {
       </div>
       {device && (
         <div className="device-info">
-          <p>{device.name}</p>
+          <p>{device.devicename}</p>
           <p>{device.username + '@' + device.ip}</p>
           <p>{formatMac(device.mac)}</p>
         </div>
@@ -165,13 +169,25 @@ const Device: React.FC<DeviceProps> = ({ device }) => {
       </div>
       <div>
         <PowerSettingsNewIcon className="device-status" color={deviceStatus ? 'success' : 'error'} />
+        <IconButton onClick={pingDevice}>
+          <SensorsIcon sx={{ color: 'white' }} />
+        </IconButton>
       </div>
       <div className="crud-buttons">
         <IconButton onClick={rmDevice}>
           <Delete sx={{ color: 'white' }} />
         </IconButton>
-        <IconButton onClick={pingDevice}>
-          <CachedIcon sx={{ color: 'white' }} />
+        <IconButton
+          onClick={() =>
+            onUpdate(device.id, {
+              username: device.username,
+              devicename: device.devicename,
+              ip: device.ip,
+              mac: device.mac,
+            })
+          }
+        >
+          <UpdateIcon sx={{ color: 'white' }} />
         </IconButton>
       </div>
     </div>
