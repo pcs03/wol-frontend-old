@@ -27,8 +27,6 @@ const Device: React.FC<DeviceProps> = ({ device, onUpdate }) => {
   const [shutdownLoading, setShutdownLoading] = useState<boolean>(false);
   const [wakeLoading, setWakeLoading] = useState<boolean>(false);
 
-  console.log(device);
-
   useEffect(() => {
     pingDevice();
   }, []);
@@ -47,7 +45,6 @@ const Device: React.FC<DeviceProps> = ({ device, onUpdate }) => {
       let counter = 0;
       const intervalId = window.setInterval(async () => {
         const status = await pingDevice();
-        console.log(counter, deviceStatus);
 
         if (status || counter >= 30) {
           setWakeLoading(false);
