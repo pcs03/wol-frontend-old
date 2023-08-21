@@ -20,7 +20,7 @@ function formatMac(mac: string) {
 }
 
 const Device: React.FC<DeviceProps> = ({ device }) => {
-  const { setDevices } = useContext(DevicesContext);
+  const { devices, setDevices } = useContext(DevicesContext);
   const [deviceStatus, setDeviceStatus] = useState<boolean>();
   const [shutdownLoading, setShutdownLoading] = useState<boolean>(false);
   const [wakeLoading, setWakeLoading] = useState<boolean>(false);
@@ -67,7 +67,15 @@ const Device: React.FC<DeviceProps> = ({ device }) => {
         },
       });
       const body = await response.json();
-      setDevices(body);
+      const deviceId = body.id;
+
+      const deviceIndex = devices.findIndex((device) => {
+        return device.id === deviceId;
+      });
+
+      const newDevices = [...devices];
+      newDevices.splice(deviceIndex, 1);
+      setDevices(newDevices);
     }
   }
 

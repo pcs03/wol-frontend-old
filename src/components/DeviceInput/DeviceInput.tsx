@@ -13,7 +13,7 @@ type DeviceInput = {
 };
 
 const DeviceInput: React.FC = () => {
-  const { setDevices } = useContext(DevicesContext);
+  const { devices, setDevices } = useContext(DevicesContext);
 
   const usernamePattern = /^[a-z_]([a-z0-9_-]{0,31}|[a-z0-9_-]{0,30}\$)$/;
   const ipPattern = /^((25[0-5]|(2[0-4]|1\d|[1-9]|)\d)\.?\b){4}$/;
@@ -49,7 +49,9 @@ const DeviceInput: React.FC = () => {
       body: payload,
     });
     const body = await response.json();
-    setDevices(body);
+
+    const newDevices = [...devices, body];
+    setDevices(newDevices);
   }
 
   return (
