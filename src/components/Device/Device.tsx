@@ -106,7 +106,6 @@ const Device: React.FC<DeviceProps> = ({ device, onUpdate }) => {
       });
 
       const body = await response.json();
-      console.log(body['status']);
 
       if (new RegExp('closed by remote host').test(body['status'])) {
         console.log('turning off');
@@ -114,7 +113,6 @@ const Device: React.FC<DeviceProps> = ({ device, onUpdate }) => {
         let counter = 0;
         const intervalId = window.setInterval(async () => {
           const status = await pingDevice();
-          console.log(counter, status);
 
           if (!status || counter >= 30) {
             setShutdownLoading(false);
