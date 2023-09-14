@@ -11,7 +11,7 @@ interface PopupProps {
 const Popup: React.FC<PopupProps> = ({ children, popup }) => {
   return (
     <div className="popup-container">
-      <IconButton onClick={() => popup(false)}>
+      <IconButton onClick={() => popup(false)} className="close-icon">
         <HighlightOffIcon sx={{ color: 'white' }} />
       </IconButton>
       {children}

@@ -76,23 +76,23 @@ const DeviceInput: React.FC<DeviceInputProps> = ({ mode, id, formFields }) => {
     >
       <div className="form-fields">
         <div className="device-input">
-          <label htmlFor="devicename">Device Name</label>
-          <input {...register('devicename')} placeholder="Desktop" defaultValue={formFields && formFields.devicename} />
+          <input
+            {...register('devicename')}
+            placeholder="Device Name"
+            defaultValue={formFields && formFields.devicename}
+          />
           <p>{errors.devicename?.message}</p>
         </div>
         <div className="device-input">
-          <label htmlFor="username">User Name</label>
-          <input {...register('username')} placeholder="john" defaultValue={formFields && formFields.username} />
+          <input {...register('username')} placeholder="Username" defaultValue={formFields && formFields.username} />
           <p>{errors.username?.message}</p>
         </div>
         <div className="device-input">
-          <label htmlFor="mac">Device MAC Address</label>
-          <input {...register('mac')} placeholder="FFFFFFFFFFFF" defaultValue={formFields && formFields.ip} />
+          <input {...register('mac')} placeholder="MAC Address" defaultValue={formFields && formFields.ip} />
           <p>{errors.mac?.message}</p>
         </div>
         <div className="device-input">
-          <label htmlFor="ip">Device IP Address</label>
-          <input {...register('ip')} placeholder="0.0.0.0" defaultValue={formFields && formFields.mac} />
+          <input {...register('ip')} placeholder="IP Address" defaultValue={formFields && formFields.mac} />
           <p>{errors.ip?.message}</p>
         </div>
       </div>

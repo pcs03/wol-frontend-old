@@ -41,7 +41,7 @@ const Device: React.FC<DeviceProps> = ({ device, onUpdate }) => {
     });
     const body = await response.json();
 
-    if (body.message === 'Magic packet sent') {
+    if (body.status === true) {
       let counter = 0;
       const intervalId = window.setInterval(async () => {
         const status = await pingDevice();
@@ -139,38 +139,18 @@ const Device: React.FC<DeviceProps> = ({ device, onUpdate }) => {
           <p>{formatMac(device.mac)}</p>
         </div>
       )}
-      <div className="device-buttons">
-        <LoadingButton
-          loading={wakeLoading}
-          variant="contained"
-          sx={{
-            color: 'white',
-            background: 'grey',
-          }}
-          className="button"
-          onClick={sendWol}
-        >
-          Wake On LAN
-        </LoadingButton>
-        <LoadingButton
-          loading={shutdownLoading}
-          variant="contained"
-          sx={{ color: 'white', background: 'grey' }}
-          className="button"
-          onClick={sendShutdown}
-        >
-          Shutdown
-        </LoadingButton>
-      </div>
-      <div>
-        <PowerSettingsNewIcon className="device-status" color={deviceStatus ? 'success' : 'error'} />
-        <IconButton onClick={pingDevice}>
-          <SensorsIcon sx={{ color: 'white' }} />
+      <div className="device-status">
+        <IconButton>
+          <PowerSettingsNewIcon
+            sx={{ fontSize: 80 }}
+            className="device-status"
+            color={deviceStatus ? 'success' : 'error'}
+          />
         </IconButton>
       </div>
       <div className="crud-buttons">
         <IconButton onClick={rmDevice}>
-          <Delete sx={{ color: 'white' }} />
+          <Delete />
         </IconButton>
         <IconButton
           onClick={() =>
@@ -182,7 +162,7 @@ const Device: React.FC<DeviceProps> = ({ device, onUpdate }) => {
             })
           }
         >
-          <UpdateIcon sx={{ color: 'white' }} />
+          <UpdateIcon />
         </IconButton>
       </div>
     </div>

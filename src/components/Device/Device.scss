@@ -29,8 +29,22 @@
   flex-direction: column;
 
   button {
-    margin: 2px 8px 2px;
-    background-color: rgb(96, 104, 108);
+    margin: 1px;
+  }
+}
+
+.device-status {
+  width: auto;
+  display: flex;
+  flex-direction: column;
+
+  div {
+    width: 40;
+    height: 40;
+
+    svg {
+      margin-top: 4px;
+    }
   }
 }
 
