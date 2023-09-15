@@ -99,7 +99,7 @@ const Device: React.FC<DeviceProps> = ({ device, onUpdate }) => {
     const confirm = window.confirm('Are you sure you want to shutdown this device?');
     if (confirm) {
       const response = await fetch(`http://${import.meta.env.VITE_API_HOST}/shutdown/${device.id}`, {
-        method: 'POST',
+        method: 'GET',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -114,7 +114,7 @@ const Device: React.FC<DeviceProps> = ({ device, onUpdate }) => {
         const intervalId = window.setInterval(async () => {
           const status = await pingDevice();
 
-          if (!status || counter >= 30) {
+          if (!status || counter >= 60) {
             setShutdownLoading(false);
             clearInterval(intervalId);
           }
